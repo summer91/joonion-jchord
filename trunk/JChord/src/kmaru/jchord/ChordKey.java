@@ -67,14 +67,15 @@ public class ChordKey implements Comparable {
 			for (int i = 0; i < key.length; i++) {
 				sb.append(Integer.toString(((int) key[i]) & 0xff) + ".");
 			}
+			return sb.substring(0, sb.length() - 1).toString();
 		} else {
 			long n = 0;
-			for (int i = key.length-1,j=0; i >= 0 ; i--, j++) {
-				n |= ((key[i]<<(8*j)) & (0xffL<<(8*j)));
+			for (int i = key.length - 1, j = 0; i >= 0; i--, j++) {
+				n |= ((key[i] << (8 * j)) & (0xffL << (8 * j)));
 			}
 			sb.append(Long.toString(n));
+			return sb.toString();
 		}
-		return sb.substring(0, sb.length() - 1).toString();
 	}
 
 	public String getIdentifier() {
