@@ -14,11 +14,11 @@ public class Chord {
 	public void createNode(String nodeId) throws ChordException {
 		ChordNode node = new ChordNode(nodeId);
 		nodeList.add(node);
-		
-		if (sortedNodeMap.get(node.getNodeKey()) != null ) {
+
+		if (sortedNodeMap.get(node.getNodeKey()) != null) {
 			throw new ChordException("Duplicated Key: " + node);
 		}
-		
+
 		sortedNodeMap.put(node.getNodeKey(), node);
 	}
 
@@ -31,5 +31,9 @@ public class Chord {
 			sortedKeyArray = sortedNodeMap.keySet().toArray();
 		}
 		return (ChordNode) sortedNodeMap.get(sortedKeyArray[i]);
+	}
+
+	public int size() {
+		return nodeList.size();
 	}
 }

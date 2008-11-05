@@ -36,17 +36,25 @@ public class ChordKey implements Comparable {
 	public ChordKey createStartKey(int index) {
 		byte[] newKey = new byte[key.length];
 		System.arraycopy(key, 0, newKey, 0, key.length);
-		int carry = 0;
-		for (int i = (Hash.KEY_LENGTH - 1) / 8; i >= 0; i--) {
-			int value = key[i] & 0xff;
-			value += (1 << (index % 8)) + carry;
-			newKey[i] = (byte) value;
-			if (value <= 0xff) {
-				break;
-			}
-			carry = (value >> 8) & 0xff;
+
+		int pos = key.length-1 - index/8;
+		int value = key[pos] & 0xff;
+		value += (1 << (index%8));
+		newKey[pos] = (byte)value;
+
+		// handling carry
+		int carry = (value>>8)&0xff;
+		int i = pos - 1;
+		while (carry > 0 && i>=0) {
+			int v = key[i] & 0xff;
+			v += carry;
+			newKey[i] = (byte)v;
+			carry = (v>>8)&0xff;
+			i--;
 		}
+		
 		return new ChordKey(newKey);
+		
 	}
 
 	public int compareTo(Object obj) {
@@ -55,7 +63,8 @@ public class ChordKey implements Comparable {
 			int loperand = (this.key[i] & 0xff);
 			int roperand = (targetKey.getKey()[i] & 0xff);
 			if (loperand != roperand) {
-				return (loperand - roperand);
+				int result = loperand - roperand;
+				return result;
 			}
 		}
 		return 0;
@@ -77,7 +86,33 @@ public class ChordKey implements Comparable {
 			return sb.toString();
 		}
 	}
+	
+	/**
+	 * Calculate the angle in identifier ring.
+	 * 
+	 * @return the degree of angel in radian (0 - 1)
+	 */
+	public double getAngle() {
+		double maxValue = Math.pow(2, Hash.KEY_LENGTH);
+		double keyValue = getDoubleValue();
+		double degree = ((keyValue / maxValue)*365);
+		double radian =  degree /180 * Math.PI;
+		return radian; 
+		
+	}
 
+	public double getDoubleValue() {
+		double result = 0;
+		for (int i=key.length-1; i>=0; i--) {
+			double value = (key[i] & 0xff);
+			for (int j=i; j<key.length-1; j++) {
+				value *= Math.pow(2, 8);
+			}
+			result += value;
+		}
+		return result;
+	}
+	
 	public String getIdentifier() {
 		return identifier;
 	}

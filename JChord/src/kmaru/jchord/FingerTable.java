@@ -16,4 +16,7 @@ public class FingerTable {
 		return fingers[i];
 	}
 
+	public int size() {
+		return fingers.length;
+	}
 }
