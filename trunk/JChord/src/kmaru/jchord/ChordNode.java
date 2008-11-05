@@ -2,6 +2,9 @@ package kmaru.jchord;
 
 import java.io.PrintStream;
 
+import kmaru.jchord.test.Main2;
+import kmaru.jchord.test.Main3;
+
 public class ChordNode {
 
 	String nodeId;
@@ -42,12 +45,16 @@ public class ChordNode {
 	 */
 	public ChordNode findSuccessor(ChordKey key) {
 
+		// add counter to evaluate lookup cost
+		Main3.counter++;
+
 		if (this == successor) {
 			return this;
 		}
 
 		if (key.isBetween(this.getNodeKey(), successor.getNodeKey())
-				|| key.compareTo(successor.getNodeKey()) == 0) {
+				|| key.compareTo(successor.getNodeKey()) == 0
+				|| key.compareTo(this.getNodeKey()) == 0) {
 			return successor;
 		} else {
 			ChordNode node = closestPrecedingNode(key);
